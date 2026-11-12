@@ -13,7 +13,7 @@ describe("estimator", () => {
     }
   });
   test("ranges are ordered for every model and task", () => {
-    for (const model of models) for (const task of ["feature", "bugfix", "refactor", "tests"] as const) {
+    for (const model of models) for (const task of ["feature", "bugfix", "refactor", "tests", "docs"] as const) {
       const { low, likely, high } = estimateOne({ ...input, task }, model);
       for (const key of ["costUsd", "minutes"] as const) {
         expect(low[key]).toBeLessThanOrEqual(likely[key]);
@@ -28,8 +28,8 @@ describe("estimator", () => {
   });
   test("hand-computed Sonnet feature case", () => {
     const rounds = 3;
-    const read = 10 * 900 + 1000 * 0.3;
-    const expectedInput = (6000 + read) * rounds * 1.25;
+    const read = 10 * 150 + 1000 * 0.3;
+    const expectedInput = (5000 + read) * rounds * 1.25;
     const expectedOutput = (1000 * 0.9 + 10 * 60) * (1 + 0.3 * (rounds - 1));
     const result = estimateOne(input, sonnet);
     for (const [key, factor] of [["low", 0.6], ["likely", 1], ["high", 1.8]] as const) {

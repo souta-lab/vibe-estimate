@@ -5,7 +5,7 @@
 :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101419;color:#e6edf3}*{box-sizing:border-box}body{max-width:1100px;margin:auto;padding:50px 24px}h1{font-size:clamp(32px,6vw,52px);letter-spacing:-2px;margin:10px 0}p{color:#a9b6c5;line-height:1.6}.tag{color:#8de0b6;font-size:13px;letter-spacing:2px;text-transform:uppercase}.controls{display:flex;flex-wrap:wrap;gap:20px;background:#19212b;padding:24px;border:1px solid #303d4c;border-radius:12px;margin:32px 0}label{flex:1;min-width:180px;font-size:14px;color:#b8c6d6}input,select{display:block;width:100%;margin-top:10px;padding:12px;border:1px solid #425267;border-radius:6px;background:#101419;color:#fff;font:inherit}input:focus,select:focus{outline:2px solid #8de0b6}.results{overflow-x:auto;border:1px solid #303d4c;border-radius:12px}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{text-align:right;padding:18px 16px;border-bottom:1px solid #293340}th:first-child,td:first-child{text-align:left}th{color:#a9b6c5;font-size:12px;text-transform:uppercase;letter-spacing:.6px}tbody tr:last-child td{border:0}td:nth-child(3){color:#8de0b6;font-weight:700}small{display:block;font-size:12px;color:#a9b6c5;font-weight:400;margin-top:5px}footer{font-size:13px;margin-top:22px;color:#a9b6c5}#status{min-height:24px;color:#f1c97b}
 </style></head>
 <body><div class="tag">API-key coding · budget planner</div><h1>vibe-estimate</h1><p>Scope the work. Compare the models. Get a feel for the cost and time.</p>
-<form class="controls" id="controls"><label>Files in scope<input id="files" type="number" min="1" step="1" value="120" required></label><label>Lines of code in scope<input id="loc" type="number" min="1" step="1" value="8000" required></label><label>Task type<select id="task"><option value="feature">Feature</option><option value="bugfix">Bug fix</option><option value="refactor">Refactor</option><option value="tests">Tests</option></select></label></form>
+<form class="controls" id="controls"><label>Files in scope<input id="files" type="number" min="1" step="1" value="120" required></label><label>Lines of code in scope<input id="loc" type="number" min="1" step="1" value="8000" required></label><label>Task type<select id="task"><option value="feature">Feature</option><option value="bugfix">Bug fix</option><option value="refactor">Refactor</option><option value="tests">Tests</option><option value="docs">Docs</option></select></label></form>
 <p id="status" role="status" aria-live="polite"></p><div class="results"><table><thead><tr><th>Model</th><th>Low cost</th><th>Likely cost</th><th>High cost</th><th>Likely time</th></tr></thead><tbody id="results"></tbody></table></div>
 <footer><span id="stamp">Prices as of 2026-11</span> · USD<br>This is a heuristic, not a quote. Actual usage depends on context, retries, tools, and agent behavior. Ranges use ×0.6 and ×1.8 of expected tokens.</footer>
 <script>
@@ -28,9 +28,9 @@ let prices = embedded, offline = false, revision = 0;
 const $ = id => document.getElementById(id);
 // Mirrors src/estimate.ts — keep the formulas in sync
 function estimate(input, model) {
-  const rounds = {feature:3,bugfix:4,refactor:3,tests:2}[input.task];
-  const ratio = {feature:0.9,bugfix:0.35,refactor:1.1,tests:0.7}[input.task];
-  const i = (6000 + input.files*900 + input.loc*0.3)*rounds*1.25;
+  const rounds = {feature:3,bugfix:4,refactor:3,tests:2,docs:2}[input.task];
+  const ratio = {feature:0.9,bugfix:0.35,refactor:1.1,tests:0.7,docs:0.2}[input.task];
+  const i = (5000 + input.files*150 + input.loc*0.3)*rounds*1.25;
   const o = (input.loc*ratio + input.files*60)*(1+0.3*(rounds-1));
   const scale = factor => ({modelId:model.id,modelName:model.name,inputTokens:Math.round(i*factor),outputTokens:Math.round(o*factor),costUsd:Number((i*factor/1e6*model.inputPer1M+o*factor/1e6*model.outputPer1M).toFixed(4)),minutes:Math.max(1,o*factor/model.outputTokensPerSec/60*1.8)});
   return {low:scale(0.6),likely:scale(1),high:scale(1.8)};

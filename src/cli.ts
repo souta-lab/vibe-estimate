@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { estimateAll, estimateOne, loadModels, OUTPUT_RATIO, ROUNDS, type EstimateInput, type TaskType } from "./estimate";
+import { estimateAll, estimateOne, loadModels, OUTPUT_RATIO, READ_TOKENS_PER_FILE, READ_TOKENS_PER_LOC, ROUNDS, SYSTEM_OVERHEAD_TOKENS, type EstimateInput, type TaskType } from "./estimate";
 
 const usage = `Usage:
   vibe-estimate estimate --files 120 --loc 8000 --task feature [--model <id>]
@@ -13,7 +13,7 @@ function positive(value: string | undefined, name: string): number {
 }
 function inputFrom(get: (key: string) => string | undefined): EstimateInput {
   const task = get("task");
-  if (!task || !Object.hasOwn(ROUNDS, task)) throw new Error("task must be feature, bugfix, refactor, or tests");
+  if (!task || !Object.hasOwn(ROUNDS, task)) throw new Error("task must be feature, bugfix, refactor, tests, or docs");
   return { files: positive(get("files"), "files"), loc: positive(get("loc"), "loc"), task: task as TaskType };
 }
 function table(rows: string[][]): void {
@@ -44,9 +44,9 @@ try {
       if (!model) throw new Error(`Unknown model: ${id}\nAvailable ids: ${data.models.map(m => m.id).join(", ")}`);
       const result = estimateOne(input, model);
       console.log(`${model.name} (${model.id})\nFiles: ${input.files}; LOC: ${input.loc}; task: ${input.task}`);
-      const read = input.files * 900 + input.loc * 0.3;
-      console.log(`Read tokens: ${read}; input per round: ${6000 + read}; rounds: ${ROUNDS[input.task]}`);
-      console.log(`Input = (6000 + ${read}) × ${ROUNDS[input.task]} × 1.25`);
+      const read = input.files * READ_TOKENS_PER_FILE + input.loc * READ_TOKENS_PER_LOC;
+      console.log(`Read tokens: ${read}; input per round: ${SYSTEM_OVERHEAD_TOKENS + read}; rounds: ${ROUNDS[input.task]}`);
+      console.log(`Input = (${SYSTEM_OVERHEAD_TOKENS} + ${read}) × ${ROUNDS[input.task]} × 1.25`);
       console.log(`Output = (${input.loc} × ${OUTPUT_RATIO[input.task]} + ${input.files} × 60) × (1 + 0.3 × ${ROUNDS[input.task] - 1})`);
       console.log(`Cost = input / 1M × ${money(model.inputPer1M)} + output / 1M × ${money(model.outputPer1M)}`);
       console.log(`Minutes = max(1, output / ${model.outputTokensPerSec} / 60 × 1.8)`);

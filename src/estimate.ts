@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-export type TaskType = "feature" | "bugfix" | "refactor" | "tests";
+export type TaskType = "feature" | "bugfix" | "refactor" | "tests" | "docs";
 export interface EstimateInput { files: number; loc: number; task: TaskType }
 export interface Model {
   id: string; name: string; provider: string;
@@ -17,12 +17,16 @@ export function loadModels(): ModelTable {
   return JSON.parse(readFileSync(new URL("../data/models.json", import.meta.url), "utf8"));
 }
 
-export const SYSTEM_OVERHEAD_TOKENS = 6000;
-export const READ_TOKENS_PER_FILE = 900;
+// Coefficients recalibrated in v0.2 against measured agent runs (see the
+// calibration section of the README): at small scopes the per-round context
+// dominates and per-file reads are far cheaper than v0.1 assumed, because the
+// agent skims and greps instead of reading every file end to end.
+export const SYSTEM_OVERHEAD_TOKENS = 5000;
+export const READ_TOKENS_PER_FILE = 150;
 export const READ_TOKENS_PER_LOC = 0.3;
 export const EDIT_TOKENS_PER_FILE = 60;
-export const ROUNDS: Record<TaskType, number> = { feature: 3, bugfix: 4, refactor: 3, tests: 2 };
-export const OUTPUT_RATIO: Record<TaskType, number> = { feature: 0.9, bugfix: 0.35, refactor: 1.1, tests: 0.7 };
+export const ROUNDS: Record<TaskType, number> = { feature: 3, bugfix: 4, refactor: 3, tests: 2, docs: 2 };
+export const OUTPUT_RATIO: Record<TaskType, number> = { feature: 0.9, bugfix: 0.35, refactor: 1.1, tests: 0.7, docs: 0.2 };
 
 export function estimateOne(input: EstimateInput, model: Model): RangedEstimate {
   const rounds = ROUNDS[input.task];
