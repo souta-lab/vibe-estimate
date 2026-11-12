@@ -1,5 +1,9 @@
 # vibe-estimate
 
+<p align="center">
+  <img src="assets/logo.png" alt="vibe-estimate logo" width="160">
+</p>
+
 Estimate API-key-based vibe coding costs and time across eight LLM coding models, with a dependency-free Bun CLI and web UI.
 
 ![Bun](https://img.shields.io/badge/Bun-runtime-black) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6) ![License MIT](https://img.shields.io/badge/License-MIT-green) ![Prices as of 2026-11](https://img.shields.io/badge/prices--as--of-2026--11-blue)
@@ -141,6 +145,7 @@ Tests cover monotonic cost growth, range ordering for every model and task, task
 
 ```text
 vibe-estimate/
+├── assets/logo.png        # Project logo
 ├── data/models.json       # Editable price source
 ├── src/estimate.ts        # Pure estimator and separate price loader
 ├── src/cli.ts             # CLI and Bun HTTP server
