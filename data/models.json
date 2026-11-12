@@ -1,0 +1,14 @@
+{
+  "asOf": "2026-11",
+  "currency": "USD",
+  "models": [
+    { "id": "claude-opus-4.5", "name": "Claude Opus 4.5", "provider": "Anthropic", "inputPer1M": 5.00, "outputPer1M": 25.00, "outputTokensPerSec": 55, "notes": "" },
+    { "id": "claude-sonnet-4.5", "name": "Claude Sonnet 4.5", "provider": "Anthropic", "inputPer1M": 3.00, "outputPer1M": 15.00, "outputTokensPerSec": 75, "notes": "" },
+    { "id": "gpt-5.1", "name": "GPT-5.1", "provider": "OpenAI", "inputPer1M": 1.25, "outputPer1M": 10.00, "outputTokensPerSec": 90, "notes": "" },
+    { "id": "gpt-5.1-codex", "name": "GPT-5.1 Codex", "provider": "OpenAI", "inputPer1M": 1.25, "outputPer1M": 10.00, "outputTokensPerSec": 90, "notes": "Codex variant, priced as GPT-5.1" },
+    { "id": "gemini-3-pro", "name": "Gemini 3 Pro", "provider": "Google", "inputPer1M": 2.00, "outputPer1M": 12.00, "outputTokensPerSec": 110, "notes": "Standard tier, prompts up to 200k tokens" },
+    { "id": "deepseek-v4-pro", "name": "DeepSeek V4 Pro", "provider": "DeepSeek", "inputPer1M": 0.66, "outputPer1M": 1.98, "outputTokensPerSec": 70, "notes": "Off-peak rate; peak is 2x" },
+    { "id": "deepseek-v4-flash", "name": "DeepSeek V4.1 Flash", "provider": "DeepSeek", "inputPer1M": 0.15, "outputPer1M": 0.60, "outputTokensPerSec": 100, "notes": "Off-peak rate; peak is 2x" },
+    { "id": "codestral-2508", "name": "Codestral 2508", "provider": "Mistral", "inputPer1M": 0.30, "outputPer1M": 0.90, "outputTokensPerSec": 130, "notes": "" }
+  ]
+}

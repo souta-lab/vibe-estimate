@@ -1,0 +1,8 @@
+{
+  "name": "vibe-estimate",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "bin": { "vibe-estimate": "src/cli.ts" },
+  "scripts": { "test": "bun test", "start": "bun run src/cli.ts" }
+}
